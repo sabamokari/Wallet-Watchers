@@ -21,4 +21,6 @@ from walletapp import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),
+    path('receive_item_id/', views.receive_item_id, name='receive_item_id'),
+    path('get_item_id/', views.get_item_id, name='get_item_id'),
 ]

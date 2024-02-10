@@ -6,6 +6,8 @@
     <style>
         body {
             background-color: #0071ce;
+            background: linear-gradient(179.2deg, rgb(21, 21, 212) 0.9%, rgb(53, 220, 243) 95.5%);
+            background-attachment: fixed;
             color: white;
         }
 
@@ -16,33 +18,34 @@
         }
 
         #titleContainer h1 {
+            font-family: 'Roboto', sans-serif;
             font-size: 36px;
             color: #ffc220; /* Adjust the color as needed */
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Add text shadow for elegance */
-        }
-
-        #questionContainer {
-            margin: auto;
-            width: 80%; /* Adjust the width as needed */
-            padding: 20px;
-            margin-top: 50px; /* Adjust the top margin as needed */
         }
 
         form {
             margin-bottom: 20px;
         }
 
-        label {
+        label, #displayCredit, #displayChecking, #displayPercent{
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px;
+            color: #ffc220; /* Adjust the color as needed */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
             display: block;
             margin-bottom: 5px;
         }
 
         input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            margin-bottom: 10px;
+          margin-bottom: 10vh;
+          border-right: none;
+          border-top: none;
+          border-left: none;
+          background-color:transparent;
+          outline: none;
+          color: #ffc220;
+          caret-color: white;
         }
 
         .toggle-button {
@@ -162,119 +165,161 @@
 <div id="titleContainer">
     <h1>Wallet Watchers</h1>
 </div>
-<div id="Question Container" style="margin: auto;
-  width: 50%;
-  padding: 10px;">
-    <form>
-        <label for="fname">Enter Credit Card Balance:</label>
-        <input type="text" id="credit" balance="credit">
+<div id="QuestionContainer" style="margin: auto; padding: 10px; width: 50%; display: flex; flex-wrap: wrap;">
+    <div style="margin-right: 30px; flex: 1; min-width: 200px;">
+        <label for="credit">Enter Credit Card Balance:</label>
+        <input style="width: 100%;" type="text" id="credit" name="credit">
         <div id="displayCredit"></div>
-    </form>
-    <br>
-    <form>
-        <label for="lname">Enter Checking Balance:</label>
-        <input type="text" id="checking" name="checking"><br>
+    </div>
+
+    <div style="margin-right: 30px; flex: 1; min-width: 200px;">
+        <label for="checking">Enter Checking Balance:</label>
+        <input style="width: 100%;" type="text" id="checking" name="checking">
         <div id="displayChecking"></div>
-
-        <br>
-        <form>
-            <label for="spending"> What would you like your monthly spending percent limit to be? It can be anything
-                from (1-30)</label>
-            <input type="text" id="percent" name="percent"><br>
-            <div id="display Percent"></div>
-            <br>
-        </form>
-        <input type="submit" value="Submit" id="submitButton" style="margin-bottom: 16px">
-    </form>
-
-    <div>
-        <!-- Enhanced buttons -->
-        <button class="toggle-button" onclick="toggleUserInput('input1')">Daily</button>
-        <button class="toggle-button" onclick="toggleUserInput('input2')">Weekly</button>
-        <button class="toggle-button" onclick="toggleUserInput('input3')">Monthly</button>
     </div>
 
-    <button id="addRowButton">Add Row</button>
-    <div id="tableContainer">
+    <div style="margin-right: 30px; flex: 5; min-width: 200px;">
+        <label for="percent">What would you like your monthly spending percent limit to be? It can be anything from (1-30):</label>
+        <input style="width: 100%;" type="text" id="percent" name="percent">
+        <div id="displayPercent"></div>
     </div>
 
+    <div style="margin-right: 30px; flex: 1; min-width: 200px;">
+        <input type="submit" value="Submit" id="submitButton" style="margin-bottom: 16px;">
+    </div>
 </div>
+
+<div>
+    <button class="toggle-button" onclick="toggleUserInput('input1')">Daily</button>
+    <button class="toggle-button" onclick="toggleUserInput('input2')">Weekly</button>
+    <button class="toggle-button" onclick="toggleUserInput('input3')">Monthly</button>
+</div>
+<button id="addRowButton">Add Row</button>
+<div id="tableContainer">
 </div>
 
 </body>
 <script>
+    {#const pollingInterval = setInterval(fetchItemIdAndMakeApiCall, 2000);#}
+    function fetchItemIdAndMakeApiCall() {
+        $.ajax({
+            url: 'http://127.0.0.1:8000/get_item_id', // Adjust URL as necessary
+            type: 'GET',
+            success: function(response) {
+                var itemId = response.itemId;
+                if (itemId) { // Check if itemId is not empty
+                    console.log("Received itemId: ", itemId);
+                    // Optionally, stop polling once you receive a valid itemId
+                    clearInterval(pollingInterval);
+                    $.ajax({
+                    url: "https://api.bluecartapi.com/request",
+                    type: "GET", // Assuming GET is appropriate for the Bluecat API
+                    data: {
+                        api_key: "2C52275379AD493D8349055DA160F723",
+                        type: "product",
+                        delivery_type: "available_in_store",
+                        item_id: itemId,
+                        customer_zipcode: "30605"
+                    },
+                    success: function(response) {
+                        console.log("Response from Bluecat API:", response);
+                        // Handle the successful response here
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error fetching data from Bluecat API:", error);
+                    }
+                });
+                }
+            },
+            error: function(error) {
+                console.log("Error fetching itemId: ", error);
+            }
+        });
+    }
     $(document).ready(function () {
         loadRows();
+        {#const pollingInterval = setInterval(fetchItemIdAndMakeApiCall, 2000);#}
+        function fetchItemIdAndMakeApiCall() {
+            $.ajax({
+                url: 'http://127.0.0.1:8000/get_item_id', // Adjust URL as necessary
+                type: 'GET',
+                success: function(response) {
+                    var itemId = response.itemId;
+                    if (itemId) { // Check if itemId is not empty
+                        console.log("Received itemId: ", itemId);
+                        // Optionally, stop polling once you receive a valid itemId
+                        clearInterval(pollingInterval);
+                        $.ajax({
+                        url: "https://api.bluecartapi.com/request",
+                        type: "GET", // Assuming GET is appropriate for the Bluecat API
+                        data: {
+                            api_key: "2C52275379AD493D8349055DA160F723",
+                            type: "product",
+                            delivery_type: "available_in_store",
+                            item_id: itemId
+                        },
+                        success: function(response) {
+                            console.log("Response from Bluecat API:", response);
+                            // Handle the successful response here
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("Error fetching data from Bluecat API:", error);
+                        }
+                    });
+                    }
+                },
+                error: function(error) {
+                    console.log("Error fetching itemId: ", error);
+                }
+            });
+        }
 
 
-        $("form").submit(function (event) {
-            // Prevent the form from submitting in the traditional way
+
+        $("#balanceForm").submit(function(event) {
             event.preventDefault();
 
-            // Get the values from the input fields
             var creditBalance = $("#credit").val();
             var checkingBalance = $("#checking").val();
             $("#displayCredit").text("Credit Balance: " + creditBalance);
             $("#displayChecking").text("Checking Balance: " + checkingBalance);
             var percentLimit = $("#percent").val();
+            var spendingLimit = userSpendingLimit(percentLimit); // Ensure this function is defined and returns a value
 
-            var spendingLim = userSpendingLimit(percentLimit);
-            var monthlyLim = spendingLim;
-            var weeklyLim = spendingLim / 4;
-            var dailyLim = spendingLim / 30;
+            if (spendingLimit !== null) {
+                var monthlyLim = spendingLimit;
+                var weeklyLim = spendingLimit / 4;
+                var dailyLim = spendingLimit / 30;
+                console.log(monthlyLim);
+                console.log(weeklyLim);
+                console.log(dailyLim);
+            }
 
-
-            // You can now use these variables as needed, for example, log them to the console
             console.log("Credit Balance: " + creditBalance);
             console.log("Checking Balance: " + checkingBalance);
-
-            // If you need to perform further actions or send the values to a server, you can do that here
+            // Further actions...
         });
 
-
-        function userSpendingLimit(inputId) {
-            var inputElement = document.getElementById(inputId);
-            inputElement.style.display = inputElement.style.display === 'none' ? 'block' : 'none'
-
-            // Prompt the user for double input and store the value
-            var userInput = inputElement;
-            if (userInput !== null) {
-                var parsedInput = parseFloat(userInput);
-                if (!isNaN(parsedInput)) {
-                    // User entered a valid double
-                    return parsedInput;
-
-                    // You can store the parsedInput in a variable or use it as needed
-                    // For example, store it in a variable like this:
-                    // var inputValue = parsedInput;
-                } else {
-                    alert("Invalid input. Please enter a valid double.");
-                }
+        function userSpendingLimit(percentLimit) {
+            var parsedInput = parseFloat(percentLimit);
+            if (!isNaN(parsedInput)) {
+                // User entered a valid number
+                return parsedInput;
+            } else {
+                alert("Invalid input. Please enter a valid number.");
+                return null; // Return null to indicate invalid input
             }
         }
 
-        function toggleUserInput(inputId) {
-            var inputElement = document.getElementById(inputId);
-            inputElement.style.display = inputElement.style.display === 'none' ? 'block' : 'none';
-
-            // Log the clicked toggle to the console
-            console.log("Toggle button clicked:", inputId);
-            if (console.log() == 'input1') {
-
-            }
-        }
 
         function addRow() {
-
             let rowNumber = $('#tableContainer .row').length + 1;
             let newRowHtml = `
-        <div class="row">
-    <form>
-            <label for="lname">Enter Expense:</label>
-            <input type="text" id="expense" name="expense"><br>
-        <br>
-    </form>
-
+            <div class="row">
+                <form>
+                    <label for="lname">Enter Expense:</label>
+                    <input type="text" id="expense" name="expense"><br><br>
+                </form>
                 <button class="deleteButton">Delete</button>
                 <div id="loadingIcon${rowNumber}" style="display: none;" class="loadingIcon"></div>
             </div>
