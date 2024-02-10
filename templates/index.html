@@ -6,13 +6,44 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
+<div id = "Question Container" style="margin: auto;
+  width: 50%;
+  padding: 10px;">
+<form action="/action_page.php" >
+    
+  <label for="fname">Enter Credit Card Balance:</label>
+  <input type="text" id="credit" balance="credit"><br><br>
+  <label for="lname">Enter Checking Balance:</label>
+  <input type="text" id="checking" name="checking"><br><br>
+  <input type="submit" value="Submit" style="margin-bottom: 16px">
+</form>
+</div>
+
+
 <div id="tableContainer">
 </div>
-<button id="addRowButton">Ad d Row</button>
+<button id="addRowButton">Add Row</button>
 </body>
 <script>
 $(document).ready(function() {
     loadRows();
+$("form").submit(function(event){
+        // Prevent the form from submitting in the traditional way
+        event.preventDefault();
+
+        // Get the values from the input fields
+        var creditBalance = $("#credit").val();
+        var checkingBalance = $("#checking").val();
+        
+
+        // You can now use these variables as needed, for example, log them to the console
+        console.log("Credit Balance: " + creditBalance);
+        console.log("Checking Balance: " + checkingBalance);
+
+        // If you need to perform further actions or send the values to a server, you can do that here
+      });
+
+
     function addRow() {
         let rowNumber = $('#tableContainer .row').length + 1;
         let newRowHtml = `
