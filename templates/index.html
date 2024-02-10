@@ -165,20 +165,20 @@
 <div id="titleContainer">
     <h1>Wallet Watchers</h1>
 </div>
-<div id="QuestionContainer" style="margin: auto; padding: 10px; width: 50%; display: flex; flex-wrap: wrap;">
-    <div style="margin-right: 30px; flex: 1; min-width: 200px;">
+<div id="QuestionContainer" style="margin: auto; padding: 10px; width: 90%; display: flex; flex-wrap: wrap;">
+    <div style="margin-right: 30px; flex: 1; min-width: 100px;">
         <label for="credit">Enter Credit Card Balance:</label>
         <input style="width: 100%;" type="text" id="credit" name="credit">
         <div id="displayCredit"></div>
     </div>
 
-    <div style="margin-right: 30px; flex: 1; min-width: 200px;">
+    <div style="margin-right: 30px; flex: 1; min-width: 100px;">
         <label for="checking">Enter Checking Balance:</label>
         <input style="width: 100%;" type="text" id="checking" name="checking">
         <div id="displayChecking"></div>
     </div>
 
-    <div style="margin-right: 30px; flex: 5; min-width: 200px;">
+    <div style="margin-left: 40px; margin-right: 40px; flex: 3; min-width: 650px;">
         <label for="percent">What would you like your monthly spending percent limit to be? It can be anything from (1-30):</label>
         <input style="width: 100%;" type="text" id="percent" name="percent">
         <div id="displayPercent"></div>
@@ -285,7 +285,7 @@
             $("#displayChecking").text("Checking Balance: " + checkingBalance);
             var percentLimit = $("#percent").val();
             var spendingLimit = userSpendingLimit(percentLimit); // Ensure this function is defined and returns a value
-
+            $("#displayPercent").val().checkPercentInput();
             if (spendingLimit !== null) {
                 var monthlyLim = spendingLimit;
                 var weeklyLim = spendingLimit / 4;
@@ -328,7 +328,29 @@
             // Append the new row to the container
             $('#tableContainer').append(newRowHtml);
         }
+    function checkPercentInput() {
+        try {
+            var percentInput = document.getElementById("percent").value;
+            var percent = parseFloat(percentInput);
 
+            if (isNaN(percent)) {
+                throw new Error("Please enter a valid number.");
+            }
+
+            if (percent <= 0 || percent > 30) {
+                throw new Error("Percent value out of bounds (1-30).");
+            }
+
+            // If the input is valid, you can handle it accordingly
+            console.log("Valid percent input:", percent);
+        } catch (error) {
+            // Handle the exception, you can log the error or display a message
+            console.error("Error:", error.message);
+            alert(error.message); // Display an alert for simplicity, you can use a more user-friendly approach
+            // Optionally, you can reset the input value or provide feedback to the user
+            document.getElementById("percent").value = "";
+        }
+    }
         $('#addRowButton').click(function () {
             addRow();
             saveRows();
