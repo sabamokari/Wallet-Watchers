@@ -16,11 +16,9 @@
 <div id = "Question Container" style="margin: auto;
   width: 50%;
   padding: 10px;">
-<form action="/action_page.php">
-
-
-  <label for="fname">Enter Credit Card Balance:</label>
-  <input type="text" id="credit" balance="credit">
+<form>
+    <label for="fname">Enter Credit Card Balance:</label>
+    <input type="text" id="credit" balance="credit">
     <div id="displayCredit"></div>
   </form>
     <br>
@@ -28,9 +26,14 @@
   <label for="lname">Enter Checking Balance:</label>
   <input type="text" id="checking" name="checking"><br>
     <div id="displayChecking"></div>
-    <br>
-  <label for = "spending"> What would you like your monthly spending limit to be? It can be anything from (1-30%)</label>
     
+        <br>
+        <form>
+  <label for = "spending"> What would you like your monthly spending percent limit to be? It can be anything from (1-30)</label>
+    <input type="text" id = "percent" name ="percent"><br>
+        <div id ="display Percent"></div>
+        <br>
+        </form>
   <input type="submit" value="Submit" style="margin-bottom: 16px">
   </form>
    
@@ -63,7 +66,12 @@ $("form").submit(function(event){
         var checkingBalance = $("#checking").val();
         $("#displayCredit").text("Credit Balance: " + creditBalance);
         $("#displayChecking").text("Checking Balance: " + checkingBalance);
-        var percentLimit = $("percent").val(); 
+        var percentLimit = $("#percent").val(); 
+        
+        var spendingLim = userSpendingLimit(percentLimit);
+        var monthlyLim = spendingLim;
+        var weeklyLim = spendingLim/4;
+        var dailyLim = spendingLim/30;
 
   
 
@@ -76,7 +84,24 @@ $("form").submit(function(event){
 
 
 function userSpendingLimit(inputId){
-    
+    var inputElement = document.getElementById(inputId);
+        inputElement.style.display = inputElement.style.display === 'none' ? 'block' : 'none'
+
+        // Prompt the user for double input and store the value
+        var userInput = inputElement;
+        if (userInput !== null) {
+            var parsedInput = parseFloat(userInput);
+            if (!isNaN(parsedInput)) {
+                // User entered a valid double
+            return parsedInput;
+                
+                // You can store the parsedInput in a variable or use it as needed
+                // For example, store it in a variable like this:
+                // var inputValue = parsedInput;
+            } else {
+                alert("Invalid input. Please enter a valid double.");
+            }
+        }
 }
     function toggleUserInput(inputId) {
         var inputElement = document.getElementById(inputId);
