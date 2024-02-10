@@ -10,14 +10,32 @@
   width: 50%;
   padding: 10px;">
 <form action="/action_page.php">
-      
+
 
   <label for="fname">Enter Credit Card Balance:</label>
-  <input type="text" id="credit" balance="credit"><br><br>
+  <input type="text" id="credit" balance="credit">
+    <div id="displayCredit"></div>
+  </form>
+    <br>
+    <form>
   <label for="lname">Enter Checking Balance:</label>
-  <input type="text" id="checking" name="checking"><br><br>
+  <input type="text" id="checking" name="checking"><br>
+    <div id="displayChecking"></div>
+    <br>
+    
   <input type="submit" value="Submit" style="margin-bottom: 16px">
-</form>
+  </form>
+    
+    <div class="dropdown">
+  
+        
+        <button class="dropbtn">Dropdown</button>
+        
+  <div class="dropdown-content">
+    <a href="#">Link 1</a>
+    <a href="#">Link 2</a>
+    <a href="#">Link 3</a>
+  </div>
 </div>
 
 
@@ -35,7 +53,10 @@ $("form").submit(function(event){
         // Get the values from the input fields
         var creditBalance = $("#credit").val();
         var checkingBalance = $("#checking").val();
-
+        $("#displayCredit").text("Credit Balance: " + creditBalance);
+        $("#displayChecking").text("Checking Balance: " + checkingBalance);
+        var percentLimit = $("percent").val(); 
+  
 
         // You can now use these variables as needed, for example, log them to the console
         console.log("Credit Balance: " + creditBalance);
