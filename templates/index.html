@@ -9,8 +9,9 @@
 <div id = "Question Container" style="margin: auto;
   width: 50%;
   padding: 10px;">
-<form action="/action_page.php" >
-    
+<form action="/action_page.php">
+      
+
   <label for="fname">Enter Credit Card Balance:</label>
   <input type="text" id="credit" balance="credit"><br><br>
   <label for="lname">Enter Checking Balance:</label>
@@ -34,7 +35,7 @@ $("form").submit(function(event){
         // Get the values from the input fields
         var creditBalance = $("#credit").val();
         var checkingBalance = $("#checking").val();
-        
+
 
         // You can now use these variables as needed, for example, log them to the console
         console.log("Credit Balance: " + creditBalance);
