@@ -124,32 +124,32 @@
             background-color: #990000;
         }
 
-        /* Style for the toggle buttons */
-        .toggle-button {
-            background-color: green; /* Updated color */
-            border: none;
-            color: white;
-            padding: 10px 24px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            transition-duration: 0.4s;
-            cursor: pointer;
-            border-radius: 8px;
-        }
+        .color-change-btn {
+        background-color: #ffc220;
+        border: none;
+        color: white;
+        padding: 10px 24px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin-right: 30px; /* Adjust the spacing between buttons */
+        transition-duration: 0.4s;
+        cursor: pointer;
+        border-radius: 8px;
+    }
 
-        /* Hover effect */
-        .toggle-button:hover {
-            background-color: darkolivegreen; /* Darker shade on hover */
-        }
+    /* Hover effect */
+    .color-change-btn:hover {
+        background-color: #45a049;
+    }
 
-        /* Active state */
-        .toggle-button:active {
-            background-color: darkgreen; /* Darker shade on active */
-            transform: translateY(2px);
-        }
+    .active {
+        background-color: green;
+        color: white;
+    }
+
+
 
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -179,7 +179,7 @@
     </div>
 
     <div style="margin-left: 40px; margin-right: 40px; flex: 3; min-width: 650px;">
-        <label for="percent">What would you like your monthly spending percent limit to be? It can be anything from (1-30):</label>
+        <label for="percent">Choose your monthly spending percent limit. It can be anything from (1-30%):</label>
         <input style="width: 100%;" type="text" id="percent" name="percent">
         <div id="displayPercent"></div>
     </div>
@@ -189,53 +189,19 @@
     </div>
 </div>
 
-<div>
-    <button class="toggle-button" onclick="toggleUserInput('input1')">Daily</button>
-    <button class="toggle-button" onclick="toggleUserInput('input2')">Weekly</button>
-    <button class="toggle-button" onclick="toggleUserInput('input3')">Monthly</button>
+<div style="display: flex; justify-content: center;">
+    <button class="color-change-btn" data-range-type="daily">Daily</button>
+    <button class="color-change-btn" data-range-type="weekly">Weekly</button>
+    <button class="color-change-btn" data-range-type="monthly">Monthly</button>
 </div>
-<button id="addRowButton">Add Row</button>
+
+{#<button id="addRowButton">Add Row</button>#}
 <div id="tableContainer">
 </div>
 
 </body>
 <script>
-    {#const pollingInterval = setInterval(fetchItemIdAndMakeApiCall, 2000);#}
-    function fetchItemIdAndMakeApiCall() {
-        $.ajax({
-            url: 'http://127.0.0.1:8000/get_item_id', // Adjust URL as necessary
-            type: 'GET',
-            success: function(response) {
-                var itemId = response.itemId;
-                if (itemId) { // Check if itemId is not empty
-                    console.log("Received itemId: ", itemId);
-                    // Optionally, stop polling once you receive a valid itemId
-                    clearInterval(pollingInterval);
-                    $.ajax({
-                    url: "https://api.bluecartapi.com/request",
-                    type: "GET", // Assuming GET is appropriate for the Bluecat API
-                    data: {
-                        api_key: "2C52275379AD493D8349055DA160F723",
-                        type: "product",
-                        delivery_type: "available_in_store",
-                        item_id: itemId,
-                        customer_zipcode: "30605"
-                    },
-                    success: function(response) {
-                        console.log("Response from Bluecat API:", response);
-                        // Handle the successful response here
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("Error fetching data from Bluecat API:", error);
-                    }
-                });
-                }
-            },
-            error: function(error) {
-                console.log("Error fetching itemId: ", error);
-            }
-        });
-    }
+    let spendingLimitRange = "";
     $(document).ready(function () {
         loadRows();
         {#const pollingInterval = setInterval(fetchItemIdAndMakeApiCall, 2000);#}
@@ -274,7 +240,12 @@
             });
         }
 
-
+        $(".color-change-btn").click(function() {
+            $(".color-change-btn").removeClass("active");
+            $(this).addClass("active");
+            spendingLimitRange = $(this).data("range-type");
+            console.log("Active spending limit range:", spendingLimitRange);
+        });
 
         $("#balanceForm").submit(function(event) {
             event.preventDefault();
