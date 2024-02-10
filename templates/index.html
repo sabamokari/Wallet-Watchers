@@ -6,6 +6,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <!-- Include jQuery UI library -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+   
 </head>
 <body>
 <div id = "Question Container" style="margin: auto;
@@ -24,34 +29,20 @@
   <input type="text" id="checking" name="checking"><br>
     <div id="displayChecking"></div>
     <br>
+  <label for = "spending"> What would you like your monthly spending limit to be? It can be anything from (1-30%)</label>
     
   <input type="submit" value="Submit" style="margin-bottom: 16px">
   </form>
-    <title>jQuery Tabs Example</title>
-    <div id="tabs">
-    <ul>
-        <li><a href="#tab-1">Daily</a></li>
-        <li><a href="#tab-2">Weekly</a></li>
-        <li><a href="#tab-3">Monthly</a></li>
-    </ul>
-    <div id="tab-1">
-        <div id="tableContainer">
-        </div>
-        <button id="addRowButton">Add Row</button>
-        </div>
-    
-    <div id="tab-2">
-        <div id="tableContainer">
-        </div>
-        <button id="addRowButton">Add Row</button>
-        </div>
-    <div id="tab-3">
-        <div id="tableContainer">
-        </div>
-        <button id="addRowButton">Add Row</button>
-        </div>
+   
+    <div>
+        <button onclick="toggleUserInput('input1')">Daily</button>
+        <button onclick="toggleUserInput('input2')">Weekly</button>
+        <button onclick="toggleUserInput('input3')">Monthly</button>
+    </div>
 
-
+ <button id="addRowButton">Add Row</button>
+ <div id="tableContainer">
+        </div>
 
 </div>
 </div>
@@ -60,9 +51,9 @@
 <script>
 $(document).ready(function() {
     loadRows();
-            $(function() {
-        $("#tabs").tabs();
-    });
+    
+   
+   
 $("form").submit(function(event){
         // Prevent the form from submitting in the traditional way
         event.preventDefault();
@@ -84,21 +75,34 @@ $("form").submit(function(event){
       });
 
 
+function userSpendingLimit(inputId){
+    
+}
+    function toggleUserInput(inputId) {
+        var inputElement = document.getElementById(inputId);
+        inputElement.style.display = inputElement.style.display === 'none' ? 'block' : 'none';
+
+        // Log the clicked toggle to the console
+        console.log("Toggle button clicked:", inputId);
+        if(console.log()=='input1'){
+            
+        }
+    }
     function addRow() {
         
         let rowNumber = $('#tableContainer .row').length + 1;
         let newRowHtml = `
-            <div class="row">
-<form>
-  <label for="lname">Enter Expense:</label>
-  <input type="text" id="expense" name="expense"><br>
-    <br>
-</form>
+        <div class="row">
+    <form>
+            <label for="lname">Enter Expense:</label>
+            <input type="text" id="expense" name="expense"><br>
+        <br>
+    </form>
 
                 <button class="deleteButton">Delete</button>
                 <div id="loadingIcon${rowNumber}" style="display: none;" class="loadingIcon"></div>
             </div>
-        `;
+    `;
 
         // Append the new row to the container
         $('#tableContainer').append(newRowHtml);
