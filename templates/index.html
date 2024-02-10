@@ -3,120 +3,271 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        body {
+            background-color: #0071ce;
+            color: white;
+        }
+
+        #titleContainer {
+            text-align: center;
+            margin-top: 30px; /* Adjust as needed */
+            margin-bottom: 20px; /* Adjust as needed */
+        }
+
+        #titleContainer h1 {
+            font-size: 36px;
+            color: #ffc220; /* Adjust the color as needed */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Add text shadow for elegance */
+        }
+
+        #questionContainer {
+            margin: auto;
+            width: 80%; /* Adjust the width as needed */
+            padding: 20px;
+            margin-top: 50px; /* Adjust the top margin as needed */
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+
+        .toggle-button {
+            background-color: #ffc220;
+            border: none;
+            color: white;
+            padding: 10px 24px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin-right: 10px; /* Adjust the spacing between buttons */
+            transition-duration: 0.4s;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+
+        /* Hover effect */
+        .toggle-button:hover {
+            background-color: #45a049;
+        }
+
+        /* Active state */
+        .toggle-button:active {
+            background-color: #3e8e41;
+            transform: translateY(2px);
+        }
+
+        #addRowButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #ffc220;
+            border: none;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.4s;
+        }
+
+        #addRowButton:hover {
+            background-color: #c69000 ;
+        }
+
+        #addRowButton:active{
+            background-color: #9e7700;
+        }
+        .row {
+            margin-bottom: 10px;
+        }
+
+        #submitButton {
+          padding: 10px 20px;
+          background-color: #ffc220;
+          border: none;
+          color: white;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: background-color 0.4s;
+        }
+
+        .deleteButton {
+            background-color: #ff0000;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition-duration: 0.4s;
+        }
+
+        .deleteButton:hover {
+            background-color: #990000;
+        }
+
+        /* Style for the toggle buttons */
+        .toggle-button {
+            background-color: green; /* Updated color */
+            border: none;
+            color: white;
+            padding: 10px 24px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            transition-duration: 0.4s;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+
+        /* Hover effect */
+        .toggle-button:hover {
+            background-color: darkolivegreen; /* Darker shade on hover */
+        }
+
+        /* Active state */
+        .toggle-button:active {
+            background-color: darkgreen; /* Darker shade on active */
+            transform: translateY(2px);
+        }
+
+    </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <!-- Include jQuery UI library -->
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-   
+
 </head>
 <body>
-<div id = "Question Container" style="margin: auto;
+<div id="titleContainer">
+    <h1>Wallet Watchers</h1>
+</div>
+<div id="Question Container" style="margin: auto;
   width: 50%;
   padding: 10px;">
-<form>
-    <label for="fname">Enter Credit Card Balance:</label>
-    <input type="text" id="credit" balance="credit">
-    <div id="displayCredit"></div>
-  </form>
+    <form>
+        <label for="fname">Enter Credit Card Balance:</label>
+        <input type="text" id="credit" balance="credit">
+        <div id="displayCredit"></div>
+    </form>
     <br>
     <form>
-  <label for="lname">Enter Checking Balance:</label>
-  <input type="text" id="checking" name="checking"><br>
-    <div id="displayChecking"></div>
-    
+        <label for="lname">Enter Checking Balance:</label>
+        <input type="text" id="checking" name="checking"><br>
+        <div id="displayChecking"></div>
+
         <br>
         <form>
-  <label for = "spending"> What would you like your monthly spending percent limit to be? It can be anything from (1-30)</label>
-    <input type="text" id = "percent" name ="percent"><br>
-        <div id ="display Percent"></div>
-        <br>
+            <label for="spending"> What would you like your monthly spending percent limit to be? It can be anything
+                from (1-30)</label>
+            <input type="text" id="percent" name="percent"><br>
+            <div id="display Percent"></div>
+            <br>
         </form>
-  <input type="submit" value="Submit" style="margin-bottom: 16px">
-  </form>
-   
+        <input type="submit" value="Submit" id="submitButton" style="margin-bottom: 16px">
+    </form>
+
     <div>
-        <button onclick="toggleUserInput('input1')">Daily</button>
-        <button onclick="toggleUserInput('input2')">Weekly</button>
-        <button onclick="toggleUserInput('input3')">Monthly</button>
+        <!-- Enhanced buttons -->
+        <button class="toggle-button" onclick="toggleUserInput('input1')">Daily</button>
+        <button class="toggle-button" onclick="toggleUserInput('input2')">Weekly</button>
+        <button class="toggle-button" onclick="toggleUserInput('input3')">Monthly</button>
     </div>
 
- <button id="addRowButton">Add Row</button>
- <div id="tableContainer">
-        </div>
+    <button id="addRowButton">Add Row</button>
+    <div id="tableContainer">
+    </div>
 
 </div>
 </div>
 
 </body>
 <script>
-$(document).ready(function() {
-    loadRows();
-    
-   
-   
-$("form").submit(function(event){
-        // Prevent the form from submitting in the traditional way
-        event.preventDefault();
-
-        // Get the values from the input fields
-        var creditBalance = $("#credit").val();
-        var checkingBalance = $("#checking").val();
-        $("#displayCredit").text("Credit Balance: " + creditBalance);
-        $("#displayChecking").text("Checking Balance: " + checkingBalance);
-        var percentLimit = $("#percent").val(); 
-        
-        var spendingLim = userSpendingLimit(percentLimit);
-        var monthlyLim = spendingLim;
-        var weeklyLim = spendingLim/4;
-        var dailyLim = spendingLim/30;
-
-  
-
-        // You can now use these variables as needed, for example, log them to the console
-        console.log("Credit Balance: " + creditBalance);
-        console.log("Checking Balance: " + checkingBalance);
-
-        // If you need to perform further actions or send the values to a server, you can do that here
-      });
+    $(document).ready(function () {
+        loadRows();
 
 
-function userSpendingLimit(inputId){
-    var inputElement = document.getElementById(inputId);
-        inputElement.style.display = inputElement.style.display === 'none' ? 'block' : 'none'
+        $("form").submit(function (event) {
+            // Prevent the form from submitting in the traditional way
+            event.preventDefault();
 
-        // Prompt the user for double input and store the value
-        var userInput = inputElement;
-        if (userInput !== null) {
-            var parsedInput = parseFloat(userInput);
-            if (!isNaN(parsedInput)) {
-                // User entered a valid double
-            return parsedInput;
-                
-                // You can store the parsedInput in a variable or use it as needed
-                // For example, store it in a variable like this:
-                // var inputValue = parsedInput;
-            } else {
-                alert("Invalid input. Please enter a valid double.");
+            // Get the values from the input fields
+            var creditBalance = $("#credit").val();
+            var checkingBalance = $("#checking").val();
+            $("#displayCredit").text("Credit Balance: " + creditBalance);
+            $("#displayChecking").text("Checking Balance: " + checkingBalance);
+            var percentLimit = $("#percent").val();
+
+            var spendingLim = userSpendingLimit(percentLimit);
+            var monthlyLim = spendingLim;
+            var weeklyLim = spendingLim / 4;
+            var dailyLim = spendingLim / 30;
+
+
+            // You can now use these variables as needed, for example, log them to the console
+            console.log("Credit Balance: " + creditBalance);
+            console.log("Checking Balance: " + checkingBalance);
+
+            // If you need to perform further actions or send the values to a server, you can do that here
+        });
+
+
+        function userSpendingLimit(inputId) {
+            var inputElement = document.getElementById(inputId);
+            inputElement.style.display = inputElement.style.display === 'none' ? 'block' : 'none'
+
+            // Prompt the user for double input and store the value
+            var userInput = inputElement;
+            if (userInput !== null) {
+                var parsedInput = parseFloat(userInput);
+                if (!isNaN(parsedInput)) {
+                    // User entered a valid double
+                    return parsedInput;
+
+                    // You can store the parsedInput in a variable or use it as needed
+                    // For example, store it in a variable like this:
+                    // var inputValue = parsedInput;
+                } else {
+                    alert("Invalid input. Please enter a valid double.");
+                }
             }
         }
-}
-    function toggleUserInput(inputId) {
-        var inputElement = document.getElementById(inputId);
-        inputElement.style.display = inputElement.style.display === 'none' ? 'block' : 'none';
 
-        // Log the clicked toggle to the console
-        console.log("Toggle button clicked:", inputId);
-        if(console.log()=='input1'){
-            
+        function toggleUserInput(inputId) {
+            var inputElement = document.getElementById(inputId);
+            inputElement.style.display = inputElement.style.display === 'none' ? 'block' : 'none';
+
+            // Log the clicked toggle to the console
+            console.log("Toggle button clicked:", inputId);
+            if (console.log() == 'input1') {
+
+            }
         }
-    }
-    function addRow() {
-        
-        let rowNumber = $('#tableContainer .row').length + 1;
-        let newRowHtml = `
+
+        function addRow() {
+
+            let rowNumber = $('#tableContainer .row').length + 1;
+            let newRowHtml = `
         <div class="row">
     <form>
             <label for="lname">Enter Expense:</label>
@@ -129,37 +280,37 @@ function userSpendingLimit(inputId){
             </div>
     `;
 
-        // Append the new row to the container
-        $('#tableContainer').append(newRowHtml);
-    }
+            // Append the new row to the container
+            $('#tableContainer').append(newRowHtml);
+        }
 
-    $('#addRowButton').click(function() {
-        addRow();
-        saveRows();
+        $('#addRowButton').click(function () {
+            addRow();
+            saveRows();
+        });
+
+        $('#tableContainer').on('click', '.deleteButton', function () {
+            let confirmation = confirm("Are you sure you want to delete this row?");
+            if (confirmation) {
+                $(this).closest('.row').remove();
+                saveRows();
+            }
+        });
+
+        function saveRows() {
+            let rowsHtml = $('#tableContainer').html();
+            localStorage.setItem('rowsHtml', rowsHtml);
+        }
+
+        // Function to load rows from localStorage
+        function loadRows() {
+            let savedRows = localStorage.getItem('rowsHtml');
+            if (savedRows) {
+                $('#tableContainer').html(savedRows);
+            }
+        }
+
     });
-
-    $('#tableContainer').on('click', '.deleteButton', function() {
-        let confirmation = confirm("Are you sure you want to delete this row?");
-        if (confirmation) {
-          $(this).closest('.row').remove();
-          saveRows();
-        }
-  });
-
-    function saveRows() {
-        let rowsHtml = $('#tableContainer').html();
-        localStorage.setItem('rowsHtml', rowsHtml);
-    }
-
-    // Function to load rows from localStorage
-    function loadRows() {
-        let savedRows = localStorage.getItem('rowsHtml');
-        if (savedRows) {
-          $('#tableContainer').html(savedRows);
-        }
-    }
-
-});
 
 </script>
 </html>
