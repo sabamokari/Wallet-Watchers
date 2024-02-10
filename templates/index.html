@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="tableContainer">
+</div>
+<button id="addRowButton">Add Row</button>
+</body>
+<script>
+    function addRow() {
+    let rowNumber = $('#dropdownContainer .row').length + 1;
+    let newRowHtml = `
+        <div class="row">
+            <button class="deleteButton">Delete</button>
+            <select class="dropdown"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option></select>
+            <select class="dropdown"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option></select>
+            <select class="dropdown"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option></select>
+            <select class="dropdown"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option></select>
+            <button class="goButton">GO</button>
+            <div id="loadingIcon${rowNumber}" style="display: none;" class="loadingIcon"></div>
+            <img src="" id="graph${rowNumber}" alt="Graph Image Placeholder"/>
+        </div>
+    `;
+
+    // Append the new row to the container
+    $('#dropdownContainer').append(newRowHtml);
+}
+</script>
+</html>
+
+
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/davidsanchez222/walletwatchers.git
+git push -u origin main
