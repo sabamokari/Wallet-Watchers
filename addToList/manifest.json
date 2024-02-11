@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "Add to List",
+  "version": "1.0",
+  "permissions": ["contextMenus", "activeTab", "storage"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://www.walmart.com/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "action": {},
+  "host_permissions": ["*://www.walmart.com/*", "*://127.0.0.1:8000/*"]
+}

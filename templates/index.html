@@ -209,6 +209,8 @@
             <th>Description</th>
             <th>Picture</th>
             <th>Percent of Credit Limit</th>
+            <th>Percent of Credit Balance</th>
+            <th>Percent of Checkings Balance</th>
         </tr>
     </thead>
     <tbody>
@@ -222,8 +224,23 @@
 <script>
     let spendingLimitRange = "monthly";
     let creditPercent = 30
+    let creditBalance = 200
+    let checkingBalance = 300
+    let userHasSubmitted = false
+
     $(document).ready(function () {
-        var pollingInterval = setInterval(fetchItemIdAndMakeApiCall, 1000);
+        function checkUserSubmission() {
+        if (userHasSubmitted) {
+            // Clear the interval to stop checking
+            clearInterval(checkSubmissionInterval);
+            // Now that userHasSubmitted is true, run the desired function
+            fetchItemIdAndMakeApiCall();
+            // Optionally, set a new interval for fetchItemIdAndMakeApiCall if needed
+            setInterval(fetchItemIdAndMakeApiCall, 1000);
+            }
+        }
+
+        var checkSubmissionInterval = setInterval(checkUserSubmission, 1000); // Check every 1000 milliseconds (1 second)
         loadRows();
         function fetchItemIdAndMakeApiCall() {
             $.ajax({
@@ -234,7 +251,6 @@
                     var lastItemId = localStorage.getItem('lastItemId')
                     if (itemId !== lastItemId) { // Check if itemId is not empty
                         console.log("Received itemId: ", itemId);
-                        // Optionally, stop polling once you receive a valid itemId
                         {#clearInterval(pollingInterval);#}
                         $.ajax({
                         url: "https://api.bluecartapi.com/request",
@@ -250,13 +266,21 @@
                             var price = response.product.buybox_winner.price
                             var image = response.product.images[0].link
                             var description = response.product.title
-                            var percentOfLimit = 0
+                            var percentOfCreditLimit = 0
+                            var percentOfCreditBalance = 0
+                            var percentOfCheckingBalance = 0
                             if (spendingLimitRange === "monthly") {
-                                percentOfLimit = (price / creditPercent).toFixed(2)
+                                percentOfCreditLimit = (Number(price) / creditPercent).toFixed(2)
+                                percentOfCreditBalance = (Number(price) / creditBalance).toFixed(2)
+                                percentOfCheckingBalance = (Number(price) / checkingBalance).toFixed(2)
                             } else if (spendingLimitRange === "weekly") {
-                                percentOfLimit = (price / (creditPercent / 4)).toFixed(2)
+                                percentOfCreditLimit = (Number(price) / (creditPercent / 4)).toFixed(2)
+                                percentOfCreditBalance = (Number(price) / (creditBalance / 4)).toFixed(2)
+                                percentOfCheckingBalance = (Number(price) / (checkingBalance / 4)).toFixed(2)
                             } else {
-                                percentOfLimit = (price / (creditPercent / 30)).toFixed(2)
+                                percentOfCreditLimit = (Number(price) / (creditPercent / 30)).toFixed(2)
+                                percentOfCreditBalance = (Number(price) / (creditBalance / 30)).toFixed(2)
+                                percentOfCheckingBalance = (Number(price) / (checkingBalance / 30)).toFixed(2)
                             }
 
                             var newRow = `
@@ -265,7 +289,9 @@
                                     <td>${price}</td>
                                     <td>${description}</td>
                                     <td><img src="${image}" alt="Product Image" style="width: 100px;"></td>
-                                    <td>${percentOfLimit}</td>
+                                    <td>${percentOfCreditLimit}</td>
+                                    <td>${percentOfCreditBalance}</td>
+                                    <td>${percentOfCheckingBalance}</td>
                                 </tr>
                             `;
                             console.log(newRow);
@@ -295,13 +321,14 @@
 
         $("#balanceForm").submit(function(event) {
             event.preventDefault();
-            var creditBalance = $("#credit").val();
-            var checkingBalance = $("#checking").val();
-            var creditPercent = $('#percent').val()
+            creditBalance = $("#credit").val();
+            checkingBalance = $("#checking").val();
+            creditPercent = $('#percent').val()
             $("#displayCredit").text("Credit Balance: " + creditBalance);
             $("#displayChecking").text("Checking Balance: " + checkingBalance);
             $("#displayPercent").text("Credit Limit: " + creditPercent);
-
+            userHasSubmitted = true
+            console.log(userHasSubmitted)
         });
 
         function userSpendingLimit(percentLimit) {
@@ -317,22 +344,23 @@
 
 
 
-        function addRow() {
-            let rowNumber = $('#tableContainer .row').length + 1;
-            let newRowHtml = `
-            <div class="row">
-                <form>
-                    <label for="lname">Enter Expense:</label>
-                    <input type="text" id="expense" name="expense"><br><br>
-                </form>
-                <button class="deleteButton">Delete</button>
-                <div id="loadingIcon${rowNumber}" style="display: none;" class="loadingIcon"></div>
-            </div>
-    `;
+    {#    function addRow() {#}
+    {#        let rowNumber = $('#tableContainer .row').length + 1;#}
+    {#        let newRowHtml = `#}
+    {#        <div class="row">#}
+    {#            <form>#}
+    {#                <label for="lname">Enter Expense:</label>#}
+    {#                <input type="text" id="expense" name="expense"><br><br>#}
+    {#            </form>#}
+    {#            <button class="deleteButton">Delete</button>#}
+    {#            <div id="loadingIcon${rowNumber}" style="display: none;" class="loadingIcon"></div>#}
+    {#        </div>#}
+    {#`;#}
+    {##}
+    {#        // Append the new row to the container#}
+    {#        $('#tableContainer').append(newRowHtml);#}
+    {#    }#}
 
-            // Append the new row to the container
-            $('#tableContainer').append(newRowHtml);
-        }
     function checkPercentInput() {
         try {
             var percentInput = document.getElementById("percent").value;
