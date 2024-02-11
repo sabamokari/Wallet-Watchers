@@ -172,13 +172,7 @@
             <input type="text" id="credit" name="credit">
             <div style="margin-bottom: 10vh; color: white" id="displayCredit"></div>
         </div>
-
-
-        <div class="input-group">
-            <label for="checking">Enter Checking Balance:</label>
-            <input type="text" id="checking" name="checking">
-            <div style="margin-bottom: 10vh; color: white" id="displayChecking"></div>
-        </div>
+        
 
 
         <div class="input-group">
@@ -210,7 +204,6 @@
             <th>Picture</th>
             <th>Percent of Credit Limit</th>
             <th>Percent of Credit Balance</th>
-            <th>Percent of Checkings Balance</th>
         </tr>
     </thead>
     <tbody>
@@ -224,11 +217,16 @@
 <script>
     let spendingLimitRange = "monthly";
     let creditPercent = 30
-    let creditBalance = 200
-    let checkingBalance = 300
+    let creditBalance = 10000
     let userHasSubmitted = false
+  
+    var monthly
+    var weekly
+    var daily
+    
 
     $(document).ready(function () {
+        {#setVals();#}
         function checkUserSubmission() {
         if (userHasSubmitted) {
             // Clear the interval to stop checking
@@ -237,9 +235,12 @@
             fetchItemIdAndMakeApiCall();
             // Optionally, set a new interval for fetchItemIdAndMakeApiCall if needed
             setInterval(fetchItemIdAndMakeApiCall, 1000);
+            
+            
             }
         }
-
+        
+  
         var checkSubmissionInterval = setInterval(checkUserSubmission, 1000); // Check every 1000 milliseconds (1 second)
         loadRows();
         function fetchItemIdAndMakeApiCall() {
@@ -268,19 +269,15 @@
                             var description = response.product.title
                             var percentOfCreditLimit = 0
                             var percentOfCreditBalance = 0
-                            var percentOfCheckingBalance = 0
                             if (spendingLimitRange === "monthly") {
                                 percentOfCreditLimit = (Number(price) / creditPercent).toFixed(2)
                                 percentOfCreditBalance = (Number(price) / creditBalance).toFixed(2)
-                                percentOfCheckingBalance = (Number(price) / checkingBalance).toFixed(2)
                             } else if (spendingLimitRange === "weekly") {
                                 percentOfCreditLimit = (Number(price) / (creditPercent / 4)).toFixed(2)
                                 percentOfCreditBalance = (Number(price) / (creditBalance / 4)).toFixed(2)
-                                percentOfCheckingBalance = (Number(price) / (checkingBalance / 4)).toFixed(2)
                             } else {
                                 percentOfCreditLimit = (Number(price) / (creditPercent / 30)).toFixed(2)
                                 percentOfCreditBalance = (Number(price) / (creditBalance / 30)).toFixed(2)
-                                percentOfCheckingBalance = (Number(price) / (checkingBalance / 30)).toFixed(2)
                             }
 
                             var newRow = `
@@ -291,7 +288,6 @@
                                     <td><img src="${image}" alt="Product Image" style="width: 100px;"></td>
                                     <td>${percentOfCreditLimit}</td>
                                     <td>${percentOfCreditBalance}</td>
-                                    <td>${percentOfCheckingBalance}</td>
                                 </tr>
                             `;
                             console.log(newRow);
@@ -317,16 +313,30 @@
             $(this).addClass("active");
             spendingLimitRange = $(this).data("range-type");
             console.log("Active spending limit range:", spendingLimitRange);
+            if(spendingLimitRange==="monthly"){
+                console.log(monthly);
+            }
+            if(spendingLimitRange==="weekly"){
+                console.log(weekly);
+            }
+            if(spendingLimitRange==="daily"){
+                console.log(daily);
+            }
         });
-
+       
         $("#balanceForm").submit(function(event) {
+            
             event.preventDefault();
             creditBalance = $("#credit").val();
-            checkingBalance = $("#checking").val();
             creditPercent = $('#percent').val()
             $("#displayCredit").text("Credit Balance: " + creditBalance);
-            $("#displayChecking").text("Checking Balance: " + checkingBalance);
             $("#displayPercent").text("Credit Limit: " + creditPercent);
+            console.log(creditBalance);
+            console.log(creditPercent);
+            monthly = (creditPercent/100)*creditBalance;
+            weekly = monthly/4;
+            daily = monthly/30;
+            
             userHasSubmitted = true
             console.log(userHasSubmitted)
         });
