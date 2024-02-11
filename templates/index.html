@@ -38,7 +38,7 @@
         }
 
         input[type="text"] {
-          margin-bottom: 10vh;
+          {#margin-bottom: 10vh;#}
           border-right: none;
           border-top: none;
           border-left: none;
@@ -165,28 +165,32 @@
 <div id="titleContainer">
     <h1>Wallet Watchers</h1>
 </div>
-<div id="QuestionContainer" style="margin: auto; padding: 10px; width: 90%; display: flex; flex-wrap: wrap;">
-    <div style="margin-right: 30px; flex: 1; min-width: 100px;">
-        <label for="credit">Enter Credit Card Balance:</label>
-        <input style="width: 100%;" type="text" id="credit" name="credit">
-        <div id="displayCredit"></div>
-    </div>
+<div id="QuestionContainer" style="margin: auto; width: 50%; padding: 10px;">
+    <form id="balanceForm">
+        <div class="input-group">
+            <label for="credit">Enter Credit Card Balance:</label>
+            <input type="text" id="credit" name="credit">
+            <div style="margin-bottom: 10vh; color: white" id="displayCredit"></div>
+        </div>
 
-    <div style="margin-right: 30px; flex: 1; min-width: 100px;">
-        <label for="checking">Enter Checking Balance:</label>
-        <input style="width: 100%;" type="text" id="checking" name="checking">
-        <div id="displayChecking"></div>
-    </div>
 
-    <div style="margin-left: 40px; margin-right: 40px; flex: 3; min-width: 650px;">
-        <label for="percent">Choose your monthly spending percent limit. It can be anything from (1-30%):</label>
-        <input style="width: 100%;" type="text" id="percent" name="percent">
-        <div id="displayPercent"></div>
-    </div>
+        <div class="input-group">
+            <label for="checking">Enter Checking Balance:</label>
+            <input type="text" id="checking" name="checking">
+            <div style="margin-bottom: 10vh; color: white" id="displayChecking"></div>
+        </div>
 
-    <div style="margin-right: 30px; flex: 1; min-width: 200px;">
-        <input type="submit" value="Submit" id="submitButton" style="margin-bottom: 16px;">
-    </div>
+
+        <div class="input-group">
+            <label for="percent">What would you like your monthly spending percent limit to be? It can be anything from (1-30):</label>
+            <input type="text" id="percent" name="percent">
+            <div style="margin-bottom: 10vh; color: white" id="displayPercent"></div>
+        </div>
+
+
+
+        <input type="submit" value="Submit" id="submitButton" style="margin-bottom: 16px">
+    </form>
 </div>
 
 <div style="display: flex; justify-content: center;">
@@ -195,26 +199,43 @@
     <button class="color-change-btn" data-range-type="monthly">Monthly</button>
 </div>
 
-{#<button id="addRowButton">Add Row</button>#}
 <div id="tableContainer">
 </div>
 
+<table id="product-table">
+    <thead>
+        <tr>
+            <th>Price</th>
+            <th>Description</th>
+            <th>Picture</th>
+            <th>Percent of Credit Limit</th>
+        </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+</table>
+
+{#<button id="addRowButton">Add Row</button>#}
+
 </body>
 <script>
-    let spendingLimitRange = "";
+    let spendingLimitRange = "monthly";
+    let creditPercent = 30
     $(document).ready(function () {
+        var pollingInterval = setInterval(fetchItemIdAndMakeApiCall, 1000);
         loadRows();
-        {#const pollingInterval = setInterval(fetchItemIdAndMakeApiCall, 2000);#}
         function fetchItemIdAndMakeApiCall() {
             $.ajax({
                 url: 'http://127.0.0.1:8000/get_item_id', // Adjust URL as necessary
                 type: 'GET',
                 success: function(response) {
                     var itemId = response.itemId;
-                    if (itemId) { // Check if itemId is not empty
+                    var lastItemId = localStorage.getItem('lastItemId')
+                    if (itemId !== lastItemId) { // Check if itemId is not empty
                         console.log("Received itemId: ", itemId);
                         // Optionally, stop polling once you receive a valid itemId
-                        clearInterval(pollingInterval);
+                        {#clearInterval(pollingInterval);#}
                         $.ajax({
                         url: "https://api.bluecartapi.com/request",
                         type: "GET", // Assuming GET is appropriate for the Bluecat API
@@ -225,14 +246,39 @@
                             item_id: itemId
                         },
                         success: function(response) {
-                            console.log("Response from Bluecat API:", response);
+                            console.log("Response from Bluecart API:", response);
+                            var price = response.product.buybox_winner.price
+                            var image = response.product.images[0].link
+                            var description = response.product.title
+                            var percentOfLimit = 0
+                            if (spendingLimitRange === "monthly") {
+                                percentOfLimit = (price / creditPercent).toFixed(2)
+                            } else if (spendingLimitRange === "weekly") {
+                                percentOfLimit = (price / (creditPercent / 4)).toFixed(2)
+                            } else {
+                                percentOfLimit = (price / (creditPercent / 30)).toFixed(2)
+                            }
+
+                            var newRow = `
+                                <tr>
+                                    <td><button class="deleteButton">Delete</button></td>
+                                    <td>${price}</td>
+                                    <td>${description}</td>
+                                    <td><img src="${image}" alt="Product Image" style="width: 100px;"></td>
+                                    <td>${percentOfLimit}</td>
+                                </tr>
+                            `;
+                            console.log(newRow);
+                            $('#product-table').children('tbody').append(newRow);
+                            saveRows();
                             // Handle the successful response here
                         },
                         error: function(xhr, status, error) {
-                            console.error("Error fetching data from Bluecat API:", error);
+                            console.error("Error fetching data from Bluecart API:", error);
                         }
                     });
                     }
+                    localStorage.setItem('lastItemId', itemId);
                 },
                 error: function(error) {
                     console.log("Error fetching itemId: ", error);
@@ -249,26 +295,13 @@
 
         $("#balanceForm").submit(function(event) {
             event.preventDefault();
-
             var creditBalance = $("#credit").val();
             var checkingBalance = $("#checking").val();
+            var creditPercent = $('#percent').val()
             $("#displayCredit").text("Credit Balance: " + creditBalance);
             $("#displayChecking").text("Checking Balance: " + checkingBalance);
-            var percentLimit = $("#percent").val();
-            var spendingLimit = userSpendingLimit(percentLimit); // Ensure this function is defined and returns a value
-            $("#displayPercent").val().checkPercentInput();
-            if (spendingLimit !== null) {
-                var monthlyLim = spendingLimit;
-                var weeklyLim = spendingLimit / 4;
-                var dailyLim = spendingLimit / 30;
-                console.log(monthlyLim);
-                console.log(weeklyLim);
-                console.log(dailyLim);
-            }
+            $("#displayPercent").text("Credit Limit: " + creditPercent);
 
-            console.log("Credit Balance: " + creditBalance);
-            console.log("Checking Balance: " + checkingBalance);
-            // Further actions...
         });
 
         function userSpendingLimit(percentLimit) {
@@ -281,6 +314,7 @@
                 return null; // Return null to indicate invalid input
             }
         }
+
 
 
         function addRow() {
@@ -322,21 +356,21 @@
             document.getElementById("percent").value = "";
         }
     }
-        $('#addRowButton').click(function () {
+       /** $('#addRowButton').click(function () {
             addRow();
             saveRows();
-        });
+        }); **/
 
-        $('#tableContainer').on('click', '.deleteButton', function () {
+        $('#product-table').on('click', '.deleteButton', function () {
             let confirmation = confirm("Are you sure you want to delete this row?");
             if (confirmation) {
-                $(this).closest('.row').remove();
+                $(this).closest('tr').remove();
                 saveRows();
             }
         });
 
         function saveRows() {
-            let rowsHtml = $('#tableContainer').html();
+            let rowsHtml = $('#product-table').html();
             localStorage.setItem('rowsHtml', rowsHtml);
         }
 
@@ -344,10 +378,9 @@
         function loadRows() {
             let savedRows = localStorage.getItem('rowsHtml');
             if (savedRows) {
-                $('#tableContainer').html(savedRows);
+                $('#product-table').html(savedRows);
             }
         }
-
     });
 
 </script>
