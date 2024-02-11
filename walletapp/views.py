@@ -6,6 +6,9 @@ import json
 import requests
 
 
+from django.shortcuts import render
+import os
+
 @csrf_exempt
 @require_http_methods(["POST"])
 def receive_item_id(request):
@@ -34,4 +37,7 @@ def get_item_id(request):
 
 
 def index(request):
-    return render(request, 'index.html')
+    context = {
+        'api_key': os.environ.get('MY_API_KEY')  # Fetching API key from environment variables
+    }
+    return render(request, 'index.html', context)

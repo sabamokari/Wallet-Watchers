@@ -226,6 +226,7 @@
     
 
     $(document).ready(function () {
+        var apiKey = "{{ api_key }}";
         {#setVals();#}
         function checkUserSubmission() {
         if (userHasSubmitted) {
@@ -239,7 +240,6 @@
             
             }
         }
-        
   
         var checkSubmissionInterval = setInterval(checkUserSubmission, 1000); // Check every 1000 milliseconds (1 second)
         loadRows();
@@ -257,7 +257,7 @@
                         url: "https://api.bluecartapi.com/request",
                         type: "GET", // Assuming GET is appropriate for the Bluecat API
                         data: {
-                            api_key: "2C52275379AD493D8349055DA160F723",
+                            api_key: apiKey,
                             type: "product",
                             delivery_type: "available_in_store",
                             item_id: itemId
